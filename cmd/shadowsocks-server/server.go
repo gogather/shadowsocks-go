@@ -43,6 +43,7 @@ var debug ss.DebugLog
 var sanitizeIps bool
 var udp bool
 var managerAddr string
+var clientManagerPort int
 
 func getRequest(conn *ss.Conn) (host string, err error) {
 	ss.SetReadTimeout(conn)
@@ -442,6 +443,7 @@ func main() {
 	flag.IntVar(&cmdConfig.ServerPort, "p", 0, "server port")
 	flag.IntVar(&cmdConfig.Timeout, "t", 300, "timeout in seconds")
 	flag.StringVar(&cmdConfig.Method, "m", "", "encryption method, default: aes-256-cfb")
+	flag.IntVar(&clientManagerPort, "mp", 9388, "client manager server port, default: 9388")
 	flag.IntVar(&core, "core", 0, "maximum number of CPU cores to use, default is determinied by Go runtime")
 	flag.BoolVar((*bool)(&debug), "d", false, "print debug message")
 	flag.BoolVar((*bool)(&sanitizeIps), "A", false, "anonymize client ip addresses in all output")
@@ -503,6 +505,8 @@ func main() {
 		defer conn.Close()
 		go managerDaemon(conn)
 	}
+
+	go manager.Run(clientManagerPort)
 
 	waitSignal()
 }

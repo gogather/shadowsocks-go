@@ -11,7 +11,7 @@ var (
 	ClientList *safemap.SafeMap = safemap.New()
 )
 
-func Run() {
+func Run(managerPort int) {
 	r := gin.Default()
 
 	r.GET("/clients", func(c *gin.Context) {
@@ -19,7 +19,7 @@ func Run() {
 		return
 	})
 
-	err := r.Run(":9838")
+	err := r.Run(fmt.Sprintf(":%d", managerPort))
 	if err != nil {
 		fmt.Println("start manage server failed, err:", err.Error())
 	}

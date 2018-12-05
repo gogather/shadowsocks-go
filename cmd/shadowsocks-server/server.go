@@ -7,6 +7,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"github.com/shadowsocks/shadowsocks-go/manager"
 	"io"
 	"log"
 	"net"
@@ -369,6 +370,8 @@ func run(port, password string) {
 				continue
 			}
 		}
+		// store client ip
+		manager.ClientList.Put(conn.RemoteAddr().String(), time.Now())
 		go handleConnection(ss.NewConn(conn, cipher.Copy()), port)
 	}
 }

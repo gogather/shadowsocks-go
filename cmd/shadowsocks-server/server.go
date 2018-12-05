@@ -372,7 +372,10 @@ func run(port, password string) {
 			}
 		}
 		// store client ip
-		manager.ClientList.Put(conn.RemoteAddr().String(), time.Now())
+		ip, _, err := net.SplitHostPort(conn.RemoteAddr().String())
+		if err != nil {
+			manager.ClientList.Put(ip, time.Now())
+		}
 		go handleConnection(ss.NewConn(conn, cipher.Copy()), port)
 	}
 }
